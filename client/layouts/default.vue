@@ -1,9 +1,17 @@
 <template>
   <v-app>
+    <TopNav />
+    
     <nuxt />
   </v-app>
 </template>
 
 <script>
-  export default {}
+  import TopNav from '../components/navigation/TopNav'
+
+  export default {
+    components: {
+      TopNav
+    }
+  }
 </script>
