@@ -8,40 +8,15 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class CategoriesStoreTest extends TestCase
+class CategoryStoreTest extends TestCase
 {
 	use DatabaseMigrations;
 
 	/** @test */
-	public function guests_cannot_view_the_create_categories_page()
-	{
-		$this->get('categories/create')
-    		->assertRedirect('/login');
-	}
-
-	/** @test */
 	public function guests_cannot_create_categories()
 	{		
-		$this->post('categories')
-    		->assertRedirect('/login');
-	}
-
-	/** @test */
-	public function only_administrators_can_view_the_create_categories_page()
-	{
-		$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'not_administrator',
-    		'display_name' => 'Not Administrator'
-       	]);
-
-    	$user->assignRole('not_administrator');
-
-    	$this->be($user);
-
-    	$this->get('categories/create')
-    		->assertStatus(403);
+		$this->json('POST', 'api/categories')
+    		->assertStatus(401);
 	}
 
 	/** @test */
@@ -54,7 +29,7 @@ class CategoriesStoreTest extends TestCase
     		'display_name' => 'Not Administrator'
        	]);
 
-    	$user->assignRole('not_administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -62,7 +37,7 @@ class CategoriesStoreTest extends TestCase
     		'name' => 'Category 1'
     	];
 
-    	$this->post('categories', $attributes)
+    	$this->jsonAs(auth()->user(), 'POST', 'api/categories', $attributes)
     		->assertStatus(403);
 	}
 
@@ -76,25 +51,16 @@ class CategoriesStoreTest extends TestCase
     		'display_name' => 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
-
-    	$this->get('categories/create')
-    		->assertStatus(200);
 
     	$attributes = [
     		'name' => 'Category 1'
     	];
 
-    	$response = $this->post('categories', $attributes);
-
-    	$category = Category::where($attributes)->first();
-
-    	$response->assertRedirect('/categories');
-
-    	$this->get('categories')
-    		->assertSee($category->name);
+    	$this->jsonAs(auth()->user(), 'POST', 'api/categories', $attributes)
+            ->assertJsonFragment($attributes);
     }
 
     /** @test */
@@ -107,7 +73,7 @@ class CategoriesStoreTest extends TestCase
     		'display_name' => 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -115,8 +81,8 @@ class CategoriesStoreTest extends TestCase
     		'name' => ''
     	];
 
-    	$this->post('categories', $attributes)
-    		->assertSessionHasErrors(['name']);
+    	$this->jsonAs(auth()->user(), 'POST', 'api/categories', $attributes)
+    		->assertJsonValidationErrors(['name']);
     }
 
     /** @test */
@@ -129,7 +95,7 @@ class CategoriesStoreTest extends TestCase
     		'display_name' => 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -137,7 +103,7 @@ class CategoriesStoreTest extends TestCase
     		'name' => 'b'
     	];
 
-    	$this->post('categories', $attributes)
-    		->assertSessionHasErrors(['name']);
+    	$this->jsonAs(auth()->user(), 'POST', 'api/categories', $attributes)
+    		->assertJsonValidationErrors(['name']);
     }
 }

@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Resources\RoleResource;
 use Spatie\Permission\Models\Role;
 
 class RolesController extends Controller
 {
 	public function index()
 	{
-		$roles = Role::all();
-
-		return view('roles.index', compact('roles'));
+		return RoleResource::collection(
+            Role::all()
+        );
 	}
-
-    public function create()
-    {
-    	return view('roles.create');
-    }
 
     public function store()
     {
@@ -26,8 +21,8 @@ class RolesController extends Controller
     		'display_name' => 'required|min:3'
     	]);
 
-    	Role::create(request(['name', 'display_name']));
+    	$role = Role::create(request(['name', 'display_name']));
 
-    	return redirect('/roles');
+    	return new RoleResource($role);
     }
 }

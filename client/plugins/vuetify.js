@@ -10,7 +10,6 @@ import { Ripple } from 'vuetify/lib/directives'
 Vue.use(Vuetify, {
   components: {
     VApp,
-    VNavigationDrawer,
     VFooter,
     VToolbar
   },

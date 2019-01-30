@@ -12,35 +12,10 @@ class RoleStoreTest extends TestCase
 	use DatabaseMigrations;
 
 	/** @test */
-	public function guests_cannot_view_the_create_roles_page()
-	{
-		$this->get('roles/create')
-    		->assertRedirect('/login');
-	}
-
-	/** @test */
 	public function guests_cannot_create_roles()
 	{		
-		$this->post('roles')
-    		->assertRedirect('/login');
-	}
-
-	/** @test */
-	public function only_administrators_can_view_the_create_roles_page()
-	{
-		$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'not_administrator',
-    		'display_name' => 'Not Administrator'
-       	]);
-
-    	$user->assignRole('not_administrator');
-
-    	$this->be($user);
-
-    	$this->get('roles/create')
-    		->assertStatus(403);
+		$this->json('POST', 'api/roles')
+    		->assertStatus(401);
 	}
 
 	/** @test */
@@ -53,7 +28,7 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'Not Administrator'
        	]);
 
-    	$user->assignRole('not_administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -62,15 +37,13 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'Some role'
     	];
 
-    	$this->post('roles', $attributes)
+    	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
     		->assertStatus(403);
 	}
 
     /** @test */
     public function an_administrator_can_create_roles()
     {
-    	$this->withoutExceptionHandling();
-
     	$user = factory(User::class)->create();
 
     	$role = factory(Role::class)->create([
@@ -78,26 +51,19 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
-
-    	$this->get('roles/create')
-    		->assertStatus(200);
 
     	$attributes = [
     		'name' => 'some_role',
     		'display_name' => 'Some role'
     	];
 
-    	$response = $this->post('roles', $attributes);
+    	$this->jsonAs(auth()->user(), 'POST', 'roles', $attributes)
+            ->assertJsonFragment($attributes);
 
-    	$role = Role::where($attributes)->first();
-
-    	$response->assertRedirect('/roles');
-
-    	$this->get('roles')
-    		->assertSee($role->name);
+        $this->assertDatabaseHas('roles', $attributes);
     }
 
     /** @test */
@@ -110,7 +76,7 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -118,8 +84,8 @@ class RoleStoreTest extends TestCase
     		'name' => ''
     	];
 
-    	$this->post('roles', $attributes)
-    		->assertSessionHasErrors(['name']);
+    	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
+    		->assertJsonValidationErrors(['name']);
     }
 
     /** @test */
@@ -132,7 +98,7 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -140,8 +106,8 @@ class RoleStoreTest extends TestCase
     		'name' => 'b'
     	];
 
-    	$this->post('roles', $attributes)
-    		->assertSessionHasErrors(['name']);
+    	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
+    		->assertJsonValidationErrors(['name']);
     }
 
     /** @test */
@@ -154,7 +120,7 @@ class RoleStoreTest extends TestCase
     		'display_name' => $roleDisplayName = 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -163,8 +129,8 @@ class RoleStoreTest extends TestCase
     		'display_name' => $roleDisplayName
     	];
 
-    	$this->post('roles', $attributes)
-    		->assertSessionHasErrors(['name']);
+    	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
+    		->assertJsonValidationErrors(['name']);
     }
 
     /** @test */
@@ -177,7 +143,7 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -185,8 +151,8 @@ class RoleStoreTest extends TestCase
     		'display_name' => ''
     	];
 
-    	$this->post('roles', $attributes)
-    		->assertSessionHasErrors(['display_name']);
+    	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
+    		->assertJsonValidationErrors(['display_name']);
     }
 
     /** @test */
@@ -199,7 +165,7 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
@@ -207,7 +173,7 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'b'
     	];
 
-    	$this->post('roles', $attributes)
-    		->assertSessionHasErrors(['display_name']);
+    	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
+    		->assertJsonValidationErrors(['display_name']);
     }
 }

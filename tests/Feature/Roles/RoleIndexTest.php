@@ -12,14 +12,14 @@ class RoleIndexTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    public function guests_cannot_view_the_roles_index_page()
+    public function guests_cannot_view_roles()
     {
-    	$this->get('roles')
-    		->assertRedirect('/login');
+        $this->json('GET', 'api/roles')
+            ->assertStatus(401);
     }
 
     /** @test */
-    public function only_adfministrators_can_view_the_roles_index_page()
+    public function non_administrators_cannot_view_roles()
     {
     	$user = factory(User::class)->create();
 
@@ -28,11 +28,11 @@ class RoleIndexTest extends TestCase
     		'display_name' => 'Not Administrator'
        	]);
 
-    	$user->assignRole('not_administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
-    	$this->get('roles')
+    	$this->jsonAs(auth()->user(), 'GET', 'api/roles')
     		->assertStatus(403);
     }
 
@@ -43,14 +43,17 @@ class RoleIndexTest extends TestCase
 
     	$role = factory(Role::class)->create([
     		'name' => $name = 'administrator',
-    		'display_name' => 'Administrator'
+    		'display_name' => $displayName = 'Administrator'
        	]);
 
-    	$user->assignRole('administrator');
+    	$user->assignRole($role);
 
     	$this->be($user);
 
-    	$this->get('roles')
-    		->assertSee($name);
+    	$this->jsonAs(auth()->user(), 'GET', 'api/roles')
+    		->assertJsonFragment([
+                'name' => $name,
+                'display_name' => $displayName
+            ]);
     }
 }

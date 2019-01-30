@@ -16,6 +16,32 @@ module.exports = {
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' }
     ]
   },
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/auth'
+  ],
+  axios: {
+    baseUrl: 'http://trax.test/api'
+  },
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: 'login',
+            method: 'post',
+            propertyName: 'meta.token'
+          },
+          user: {
+            url: 'me',
+            method: 'get',
+            propertyName: 'data'
+          },
+          logout: {}
+        }
+      }
+    }
+  },
   plugins: ['~/plugins/vuetify.js'],
   css: ['~/assets/style/app.styl'],
   /*

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Auth\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 
 class LoginController extends Controller
 {
     public function login()
     {
-    	request()->validate([
+    	$user = request()->validate([
     		'email' => 'email|required|exists:users,email',
     		'password' => 'required'
     	]);
@@ -23,5 +23,12 @@ class LoginController extends Controller
     			]
     		], 422);
     	}
+
+        return (new UserResource(request()->user()))
+            ->additional([
+                'meta' => [
+                    'token' => $token
+                ]
+            ]);
     }
 }
