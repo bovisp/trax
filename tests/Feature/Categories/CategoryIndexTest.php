@@ -3,9 +3,7 @@
 namespace Tests\Feature\Categories;
 
 use App\Category;
-use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Spatie\Permission\Contracts\Role;
 use Tests\TestCase;
 
 class CategoryIndexTest extends TestCase

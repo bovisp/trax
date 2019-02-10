@@ -2,11 +2,12 @@
 
 namespace Tests\Feature\Categories;
 
-use App\Category;
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Spatie\Permission\Models\Role;
+use App\Category;
 use Tests\TestCase;
+use Spatie\Permission\Models\Role;
+use Facades\Tests\Assignments\UserFactory;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CategoryStoreTest extends TestCase
 {
@@ -22,14 +23,8 @@ class CategoryStoreTest extends TestCase
 	/** @test */
 	public function only_administrators_can_create_categories()
 	{
-		$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'not_administrator',
-    		'display_name' => 'Not Administrator'
-       	]);
-
-    	$user->assignRole($role);
+		$user = UserFactory::withRole('not_administrator', 'Not Administrator')
+            ->create();
 
     	$this->be($user);
 
@@ -44,14 +39,8 @@ class CategoryStoreTest extends TestCase
     /** @test */
     public function an_administrator_can_create_categories()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'administrator',
-    		'display_name' => 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole('administrator', 'Administrator')
+            ->create();
 
     	$this->be($user);
 
@@ -66,14 +55,8 @@ class CategoryStoreTest extends TestCase
     /** @test */
     public function a_category_requires_a_name()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'administrator',
-    		'display_name' => 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole('administrator', 'Administrator')
+            ->create();
 
     	$this->be($user);
 
@@ -88,14 +71,8 @@ class CategoryStoreTest extends TestCase
     /** @test */
     public function a_category_requires_a_name_to_be_at_least_three_characters_in_length()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'administrator',
-    		'display_name' => 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole('administrator', 'Administrator')
+            ->create();
 
     	$this->be($user);
 

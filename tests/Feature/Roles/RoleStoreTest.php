@@ -3,9 +3,10 @@
 namespace Tests\Feature\Roles;
 
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
+use Spatie\Permission\Models\Role;
+use Facades\Tests\Assignments\UserFactory;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class RoleStoreTest extends TestCase
 {
@@ -21,14 +22,8 @@ class RoleStoreTest extends TestCase
 	/** @test */
 	public function only_administrators_can_create_roles()
 	{
-		$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'not_administrator',
-    		'display_name' => 'Not Administrator'
-       	]);
-
-    	$user->assignRole($role);
+		$user = UserFactory::withRole('not_administrator', 'Not Administrator')
+            ->create();
 
     	$this->be($user);
 
@@ -44,14 +39,8 @@ class RoleStoreTest extends TestCase
     /** @test */
     public function an_administrator_can_create_roles()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'administrator',
-    		'display_name' => 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole('administrator', 'Administrator')
+            ->create();
 
     	$this->be($user);
 
@@ -60,7 +49,7 @@ class RoleStoreTest extends TestCase
     		'display_name' => 'Some role'
     	];
 
-    	$this->jsonAs(auth()->user(), 'POST', 'roles', $attributes)
+    	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
             ->assertJsonFragment($attributes);
 
         $this->assertDatabaseHas('roles', $attributes);
@@ -69,14 +58,8 @@ class RoleStoreTest extends TestCase
     /** @test */
     public function a_role_requires_a_name()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'administrator',
-    		'display_name' => 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole('administrator', 'Administrator')
+            ->create();
 
     	$this->be($user);
 
@@ -91,14 +74,8 @@ class RoleStoreTest extends TestCase
     /** @test */
     public function a_role_requires_a_name_to_be_at_least_three_characters_in_length()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'administrator',
-    		'display_name' => 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole('administrator', 'Administrator')
+            ->create();
 
     	$this->be($user);
 
@@ -113,20 +90,14 @@ class RoleStoreTest extends TestCase
     /** @test */
     public function a_role_must_have_a_unique_name()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => $roleName = 'administrator',
-    		'display_name' => $roleDisplayName = 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole($name = 'administrator', $displayName = 'Administrator')
+            ->create();
 
     	$this->be($user);
 
     	$attributes = [
-    		'name' => $roleName,
-    		'display_name' => $roleDisplayName
+    		'name' => $name,
+    		'display_name' => $displayName
     	];
 
     	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
@@ -136,14 +107,8 @@ class RoleStoreTest extends TestCase
     /** @test */
     public function a_role_requires_a_display_name()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'administrator',
-    		'display_name' => 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole('administrator', 'Administrator')
+            ->create();
 
     	$this->be($user);
 
@@ -158,14 +123,8 @@ class RoleStoreTest extends TestCase
     /** @test */
     public function a_role_requires_a_display_name_to_be_at_least_three_characters_in_length()
     {
-    	$user = factory(User::class)->create();
-
-    	$role = factory(Role::class)->create([
-    		'name' => 'administrator',
-    		'display_name' => 'Administrator'
-       	]);
-
-    	$user->assignRole($role);
+    	$user = UserFactory::withRole('administrator', 'Administrator')
+            ->create();
 
     	$this->be($user);
 
