@@ -1,0 +1,1 @@
+export const baseURL = 'http://trax.test/api'

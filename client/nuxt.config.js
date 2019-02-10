@@ -1,79 +1,66 @@
-const nodeExternals = require('webpack-node-externals')
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+const pkg = require('./package')
+
+
 module.exports = {
+  mode: 'universal',
+
   /*
   ** Headers of the page
   */
   head: {
-    title: 'client',
+    title: pkg.name,
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Trax Client' }
+      { hid: 'description', name: 'description', content: pkg.description }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-  modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/auth'
-  ],
-  axios: {
-    baseUrl: 'http://trax.test/api'
-  },
-  auth: {
-    strategies: {
-      local: {
-        endpoints: {
-          login: {
-            url: 'login',
-            method: 'post',
-            propertyName: 'meta.token'
-          },
-          user: {
-            url: 'me',
-            method: 'get',
-            propertyName: 'data'
-          },
-          logout: {}
-        }
-      }
-    }
-  },
-  plugins: ['~/plugins/vuetify.js'],
-  css: ['~/assets/style/app.styl'],
+
   /*
-  ** Customize the progress bar color
+  ** Customize the progress-bar color
   */
-  loading: { color: '#3B8070' },
+  loading: { color: '#fff' },
+
+  /*
+  ** Global CSS
+  */
+  css: [
+    '~/assets/css/style.scss'
+  ],
+
+  /*
+  ** Plugins to load before mounting the App
+  */
+  plugins: [
+    './plugins/init/init.js',
+    './plugins/axios/axios.js',
+    './plugins/mixins/auth',
+    './plugins/mixins/validation',
+    {
+      src: './plugins/navigation/topnav.js',
+      ssr: false
+    }
+  ],
+
+  router: {
+    middleware: [
+      'init',
+      'clearValidationErrors'
+    ]
+  },
+
   /*
   ** Build configuration
   */
   build: {
-    transpile: [/^vuetify/],
-    plugins: [
-      new VuetifyLoaderPlugin()
-    ],
-    extractCSS: true,
-    extend (config, ctx) {
-      // Run ESLint on save
-      if (ctx.isDev && ctx.isClient) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/
-        })
-      }
-      if (process.server) {
-        config.externals = [
-          nodeExternals({
-            whitelist: [/^vuetify/]
-          })
-        ]
-      }
+    /*
+    ** You can extend webpack config here
+    */
+    extend(config, ctx) {
+      
     }
   }
 }

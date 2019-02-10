@@ -1,9 +1,9 @@
 <template>
-  <v-app>
+  <div>
     <TopNav />
-    
+
     <nuxt />
-  </v-app>
+  </div>
 </template>
 
 <script>

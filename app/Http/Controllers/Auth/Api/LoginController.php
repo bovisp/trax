@@ -17,8 +17,8 @@ class LoginController extends Controller
     	if (!$token = auth()->attempt(request(['email', 'password']))) {
     		return response()->json([
     			'errors' => [
-    				'email' => [
-    					'Sory we couldn\'t sign you in with those details'
+    				'message' => [
+    					'Sorry we couldn\'t sign you in with those details'
     				]
     			]
     		], 422);

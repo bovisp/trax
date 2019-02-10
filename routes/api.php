@@ -1,8 +1,9 @@
 <?php
 
-Route::post('register', 'Auth\Api\RegisterController@register');
-Route::post('login', 'Auth\Api\LoginController@login');
-Route::get('me', 'Auth\Api\MeController@me')->middleware(['auth:api']);
+Route::post('auth/register', 'Auth\Api\RegisterController@register');
+Route::post('auth/login', 'Auth\Api\LoginController@login');
+Route::post('auth/logout', 'Auth\Api\LogoutController@logout');
+Route::get('auth/me', 'Auth\Api\MeController@me')->middleware(['auth:api']);;
 
 Route::get('roles', 'RolesController@index')->middleware(['auth:api', 'role:administrator']);
 Route::post('roles', 'RolesController@store')->middleware(['auth:api', 'role:administrator']);
