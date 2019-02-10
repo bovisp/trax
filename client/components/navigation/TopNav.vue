@@ -46,6 +46,14 @@
 							</a>
 
 							<div class="navbar-dropdown is-right">
+								<nuxt-link 
+									class="navbar-item" 
+									:to="{ name: 'admin' }"
+									v-if="admin"
+								>
+									Site administration
+								</nuxt-link>
+
 								<a class="navbar-item" @click.prevent="signout">
 									Logout
 								</a>
@@ -60,6 +68,14 @@
 
 <script>
 	export default {
+		computed: {
+			admin () {
+				if (this.user.roles !== null) {
+					return this.user.roles.name === 'administrator'
+				}
+			}
+		},
+
 		methods: {
 			async signout () {
 				await this.$store.dispatch('auth/logout')
