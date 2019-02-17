@@ -3,3 +3,21 @@
 		margin-top: .5rem;
 	}
 }
+
+.mb {
+	&-4 {
+		margin-bottom: 1rem;
+	}
+}
+
+.mr {
+	&-auto {
+		margin-right: auto;
+	}
+}
+
+items {
+	&-center {
+		align-items: center;
+	}
+}

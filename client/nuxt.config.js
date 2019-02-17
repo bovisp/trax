@@ -38,6 +38,7 @@ module.exports = {
     './plugins/init/init.js',
     './plugins/axios/axios.js',
     './plugins/mixins/auth',
+    './plugins/mixins/snackbar',
     './plugins/mixins/validation',
     {
       src: './plugins/navigation/topnav.js',
@@ -51,6 +52,10 @@ module.exports = {
       'clearValidationErrors'
     ]
   },
+
+  modules: [
+    'nuxt-buefy',
+  ],
 
   /*
   ** Build configuration

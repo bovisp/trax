@@ -23,6 +23,9 @@ class RolesController extends Controller
 
     	$role = Role::create(request(['name', 'display_name']));
 
-    	return new RoleResource($role);
+    	return (new RoleResource($role))
+            ->additional([
+                'message' => 'Role successfully created'
+            ]);
     }
 }
