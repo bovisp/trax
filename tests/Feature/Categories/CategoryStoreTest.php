@@ -39,17 +39,28 @@ class CategoryStoreTest extends TestCase
     /** @test */
     public function an_administrator_can_create_categories()
     {
-    	$user = UserFactory::withRole('administrator', 'Administrator')
+        $user = UserFactory::withRole('administrator', 'Administrator')
             ->create();
 
     	$this->be($user);
 
+        $parentCategory = factory(Category::class)->create();
+
     	$attributes = [
-    		'name' => 'Category 1'
+    		'name' => 'Category 1',
+            'parent_id' => $parentCategory->id
     	];
 
     	$this->jsonAs(auth()->user(), 'POST', 'api/categories', $attributes)
-            ->assertJsonFragment($attributes);
+            ->assertJsonFragment([ 
+                'name' => 'Category 1'
+            ])
+            ->assertJsonStructure([
+                'data',
+                'message'
+            ]);
+
+        $this->assertDatabaseHas('categories', $attributes);
     }
 
     /** @test */

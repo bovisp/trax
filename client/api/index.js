@@ -11,5 +11,11 @@ export default {
   roles: {
   	index: () => axios.get('roles'),
   	store: (data) => axios.post('roles', data)
+  },
+
+  categories: {
+  	index: () => axios.get('categories'),
+  	store: (data) => axios.post('categories', data),
+    show: (id) => axios.get(`categories/${id}`)
   }
 }

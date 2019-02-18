@@ -50,7 +50,11 @@ class RoleStoreTest extends TestCase
     	];
 
     	$this->jsonAs(auth()->user(), 'POST', 'api/roles', $attributes)
-            ->assertJsonFragment($attributes);
+            ->assertJsonFragment($attributes)
+            ->assertJsonStructure([
+                'data',
+                'message'
+            ]);
 
         $this->assertDatabaseHas('roles', $attributes);
     }

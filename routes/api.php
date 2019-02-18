@@ -8,5 +8,6 @@ Route::get('auth/me', 'Auth\Api\MeController@me')->middleware(['auth:api']);;
 Route::get('roles', 'RolesController@index')->middleware(['auth:api', 'role:administrator']);
 Route::post('roles', 'RolesController@store')->middleware(['auth:api', 'role:administrator']);
 
-Route::get('categories', 'CategoriesController@index');
+Route::get('categories', 'CategoriesController@index')->middleware(['auth:api', 'role:administrator']);
+Route::get('categories/{category}', 'CategoriesController@show')->middleware(['auth:api', 'role:administrator']);
 Route::post('categories', 'CategoriesController@store')->middleware(['auth:api', 'role:administrator']);

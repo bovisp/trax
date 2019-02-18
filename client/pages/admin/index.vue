@@ -5,6 +5,10 @@
 	            <b-tab-item label="Users">
 	                <UsersTab />
 	            </b-tab-item>
+
+	            <b-tab-item label="Courses">
+	                <CoursesTab />
+	            </b-tab-item>
 	        </b-tabs>
     	</div>
     </section>
@@ -12,12 +16,14 @@
 
 <script>
 	import UsersTab from '../../components/admin/tabs/UsersTab'
+	import CoursesTab from '../../components/admin/tabs/CoursesTab'
 
 	export default {
 		middleware: ['admin'],
 
 		components: {
-			UsersTab
+			UsersTab,
+			CoursesTab
 		},
 
 		data() {

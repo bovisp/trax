@@ -39,10 +39,12 @@ class RoleIndexTest extends TestCase
 
     	$this->be($user);
 
+        $role = factory(Role::class)->create();
+
     	$this->jsonAs(auth()->user(), 'GET', 'api/roles')
     		->assertJsonFragment([
-                'name' => $name,
-                'display_name' => $displayName
+                'name' => $role->name,
+                'display_name' => $role->display_name
             ]);
     }
 }

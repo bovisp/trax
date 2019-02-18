@@ -10,7 +10,7 @@ class CategoriesController extends Controller
 	public function index()
 	{
 		return CategoryResource::collection(
-			Category::all()
+			Category::with('children')->parents()->get()
 		);
 	}
 
@@ -20,8 +20,18 @@ class CategoriesController extends Controller
     		'name' => 'required|min:3'
     	]);
 
-    	$category = Category::create(request(['name']));
+    	$category = Category::create(request()->only(['name', 'parent_id']));
 
-    	return new CategoryResource($category);
+    	return (new CategoryResource($category))
+    		->additional([
+    			'message' => 'Category successfully created.'
+    		]);
+    }
+
+    public function show(Category $category)
+    {
+        $category->load(['children']);
+
+        return new CategoryResource($category);
     }
 }
