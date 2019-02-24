@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Rules\CategoryParentId;
 use App\Http\Resources\CategoryResource;
 
 class CategoriesController extends Controller
@@ -20,7 +21,7 @@ class CategoriesController extends Controller
     		'name' => 'required|min:3'
     	]);
 
-    	$category = Category::create(request()->only(['name', 'parent_id']));
+    	$category = Category::create(request(['name', 'parent_id']));
 
     	return (new CategoryResource($category))
     		->additional([
@@ -33,5 +34,30 @@ class CategoriesController extends Controller
         $category->load(['children']);
 
         return new CategoryResource($category);
+    }
+
+    public function edit(Category $category)
+    {
+        $category->load(['children']);
+
+        return new CategoryResource($category);
+    }
+
+    public function update(Category $category)
+    {
+        request()->validate([
+            'name' => 'sometimes|required|min:3',
+            'parent_id' => [
+                'sometimes',
+                new CategoryParentId
+            ]
+        ]);
+
+        $category->update(request(['name', 'parent_id']));
+
+        return (new CategoryResource($category))
+            ->additional([
+                'message' => 'Category successfully updated.'
+            ]);
     }
 }
