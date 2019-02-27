@@ -8,7 +8,7 @@
 							{{ category.name }}
 						</h2>
 
-						<nuxt-link to="/" class="button is-text">
+						<nuxt-link :to="{ name: 'admin-categories-id-edit', params: { id: category.id } }" class="button is-text">
 							Edit category
 						</nuxt-link>
 					</div>
@@ -40,7 +40,8 @@
 
 		computed: {
 			...mapGetters({
-				category: 'admin/categories/category'
+				category: 'admin/categories/category',
+				categories: 'admin/categories/categories'
 			}),
 
 			hasChildren () {
@@ -50,12 +51,18 @@
 
 		methods: {
 			...mapActions({
-				fetch: 'admin/categories/show'
-			})
+				fetch: 'admin/categories/show',
+				fetchAll: 'admin/categories/index'
+			}),
+
+			async fetchCategory (id) {
+				await this.fetch(id)
+			}
 		},
 
 		mounted () {
-			this.fetch(this.$route.params.id)
+			this.fetchCategory(this.$route.params.id)
+			this.fetchAll()
 		}
 	}
 </script>

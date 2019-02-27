@@ -43,6 +43,10 @@ module.exports = {
     {
       src: './plugins/navigation/topnav.js',
       ssr: false
+    },
+    {
+      src: './plugins/components/vue-multiselect.js', 
+      ssr: false
     }
   ],
 

@@ -69,6 +69,12 @@ class UpdateCategoriesTest extends TestCase
     		'parent_id' => null
     	]);
 
+    	$topLevelCategory1->children()->save(
+    		$topLevelCategory1Child = factory(Category::class)->create()
+    	);
+
+    	$this->assertCount(1, $topLevelCategory1->fresh()->children);
+
     	$topLevelCategory2 = factory(Category::class)->create([
     		'parent_id' => null
     	]);
@@ -84,7 +90,15 @@ class UpdateCategoriesTest extends TestCase
     		'parent_id' => $topLevelCategory2->id
     	]);
 
-    	$response->assertJsonFragment($attributes);
+    	$this->assertCount(0, $topLevelCategory1->fresh()->children);
+
+    	$response->assertJsonStructure([
+    		'data' => [
+    			'parent' => [
+	    			'id'
+	    		]
+    		]
+    	]);
     }
 
     /** @test */

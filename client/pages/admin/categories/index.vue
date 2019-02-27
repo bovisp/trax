@@ -13,25 +13,46 @@
 						</nuxt-link>
 					</div>
 
-					<div class="menu">
-						<template
-							v-for="category in categories"
-						>
-							<p class="menu-label">
-								<nuxt-link :to="{ name: 'admin-categories-id', params: { id: category.id } }">
-									{{ category.name }}
-								</nuxt-link>
-							</p>
-
-							<ul class="menu-list" v-if="category.children.length">
-								<li v-for="child in category.children">
-									<nuxt-link :to="{ name: 'admin-categories-id', params: { id: child.id } }">
-										{{ child.name }}
-									</nuxt-link>
-								</li>
-							</ul>
+					<b-table 
+						:data="categories" 
+						:columns="columns"
+						:opened-detailed="defaultOpenedDetails"
+						:show-detail-icon="showDetailIcon"
+						ref="table"
+						detailed
+            			detail-key="id"
+					>
+						<template slot-scope="props">
+							<b-table-column field="name" label="Name">
+			                    <nuxt-link :to="{ name: 'admin-categories-id', params: { id: props.row.id } }">
+	                				{{ props.row.name }}
+	                			</nuxt-link>
+			                </b-table-column>
 						</template>
-					</div>
+
+						<template slot="detail" slot-scope="props">
+			                <div v-if="props.row.children.length">
+			                	<h3 class="title is-5 has-text-weight-light">
+			                		Child categories
+			                	</h3>
+
+			                	<ul class="ml-4">
+			                		<li
+										v-for="child in props.row.children"
+										:key="child.id"
+			                		>
+			                			<nuxt-link :to="{ name: 'admin-categories-id', params: { id: child.id } }">
+			                				{{ child.name }}
+			                			</nuxt-link>
+			                		</li>
+			                	</ul>
+			                </div>
+
+			                <div v-else>
+			                	<p>No child categories</p>
+			                </div>
+			            </template>
+					</b-table>
 				</div>
 			</div>
 		</div>
@@ -44,6 +65,16 @@
 
 	export default {
 		middleware: ['admin'],
+
+		data () {
+			return {
+				columns: [
+					{ field: 'name', label: 'Name' }
+				],
+				defaultOpenedDetails: [],
+                showDetailIcon: true
+			}
+		},
 
 		computed: {
 			...mapGetters({

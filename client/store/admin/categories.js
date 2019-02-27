@@ -46,5 +46,15 @@ export const actions = {
     } catch (e) {
       return e.response
     }
+  },
+
+  async update ({ commit }, { form, categoryId }) {
+    try {
+      let response = await api.categories.update(form, categoryId)
+
+      return response
+    } catch (e) {
+      return e.response
+    }
   }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Category;
 use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,7 +19,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'parent_id' => $this->parent_id,
+            'parent' => new CategoryResource($this->whenLoaded('parent')),
             'children' => CategoryResource::collection($this->whenLoaded('children'))
         ];
     }

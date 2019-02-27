@@ -31,15 +31,13 @@ class CategoriesController extends Controller
 
     public function show(Category $category)
     {
-        $category->load(['children']);
+        $category->load(['children', 'parent']);
 
         return new CategoryResource($category);
     }
 
     public function edit(Category $category)
     {
-        $category->load(['children']);
-
         return new CategoryResource($category);
     }
 
@@ -54,6 +52,15 @@ class CategoriesController extends Controller
         ]);
 
         $category->update(request(['name', 'parent_id']));
+
+        if ($category->children->count() && !is_null($category->parent_id)) {
+            $category->children
+                ->each(function ($category) {
+                    $category->update([
+                        'parent_id' => null
+                    ]);
+                });
+        }
 
         return (new CategoryResource($category))
             ->additional([
