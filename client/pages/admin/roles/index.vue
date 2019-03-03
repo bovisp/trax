@@ -13,7 +13,21 @@
 						</nuxt-link>
 					</div>
 
-					<b-table :data="roles" :columns="columns"></b-table>
+					<b-table :data="roles">
+						<template slot-scope="props">
+							<b-table-column field="name" label="Name">
+			                    <nuxt-link :to="{ name: 'admin-roles-id', params: { id: props.row.id } }">
+	                				{{ props.row.name }}
+	                			</nuxt-link>
+			                </b-table-column>
+
+			                <b-table-column field="dispay_name" label="Display name">
+			                    <nuxt-link :to="{ name: 'admin-roles-id', params: { id: props.row.id } }">
+	                				{{ props.row.display_name }}
+	                			</nuxt-link>
+			                </b-table-column>
+						</template>
+					</b-table>
 				</div>
 			</div>
 		</div>
@@ -21,26 +35,25 @@
 </template>
 
 <script>
-	import api from '../../../api'
+	import { mapActions, mapGetters } from 'vuex'
 
 	export default {
 		middleware: ['admin'],
-		
-		data () {
-			return {
-				roles: [],
-				columns: [
-					{ field: 'name', label: 'Name' },
-                    { field: 'display_name', label: 'Display name'}
-				]
-			}
+
+		computed: {
+			...mapGetters({
+				roles: 'admin/roles/roles'
+			})
 		},
 
-		asyncData ({ params }) {
-			return api.roles.index()
-				.then(response => {
-					return { roles: response.data.data }
-				})
+		methods: {
+			...mapActions({
+				fetch: 'admin/roles/index'
+			})
+		},
+
+		async mounted () {
+			await this.fetch()
 		}
 	}
 </script>

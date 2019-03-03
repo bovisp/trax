@@ -6,7 +6,6 @@ export default ({ store }) => {
 
 		error => {
 			if (error.response.status === 422) {
-				console.log(error.response.data.errors)
 				store.dispatch('validation/setErrors', error.response.data.errors)
 			}
 

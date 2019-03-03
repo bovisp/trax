@@ -44,7 +44,6 @@
 
 						<b-table 
 							:data="categories" 
-							:columns="columns"
 							:opened-detailed="defaultOpenedDetails"
 							:show-detail-icon="showDetailIcon"
 							ref="table"

@@ -6,6 +6,7 @@ Route::post('auth/logout', 'Auth\Api\LogoutController@logout');
 Route::get('auth/me', 'Auth\Api\MeController@me')->middleware(['auth:api']);;
 
 Route::get('roles', 'RolesController@index')->middleware(['auth:api', 'role:administrator']);
+Route::get('roles/{role}', 'RolesController@show')->middleware(['auth:api', 'role:administrator']);
 Route::post('roles', 'RolesController@store')->middleware(['auth:api', 'role:administrator']);
 
 Route::get('categories', 'CategoriesController@index')->middleware(['auth:api', 'role:administrator']);

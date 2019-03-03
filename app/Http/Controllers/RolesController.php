@@ -28,4 +28,9 @@ class RolesController extends Controller
                 'message' => 'Role successfully created'
             ]);
     }
+
+    public function show(Role $role)
+    {
+        return new RoleResource($role);
+    }
 }
