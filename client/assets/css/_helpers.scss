@@ -32,10 +32,18 @@
 	&-4 {
 		margin-left: 1rem;
 	}
+
+	&-auto {
+		margin-left: auto;
+	}
 }
 
 items {
 	&-center {
 		align-items: center;
 	}
+}
+
+.is-cursor-pointer {
+	cursor: pointer;
 }

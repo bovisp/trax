@@ -91,14 +91,6 @@ class UpdateCategoriesTest extends TestCase
     	]);
 
     	$this->assertCount(0, $topLevelCategory1->fresh()->children);
-
-    	$response->assertJsonStructure([
-    		'data' => [
-    			'parent' => [
-	    			'id'
-	    		]
-    		]
-    	]);
     }
 
     /** @test */
@@ -127,8 +119,6 @@ class UpdateCategoriesTest extends TestCase
     		'id' => $childCategory->id,
     		'parent_id' => null
     	]);
-
-    	$response->assertJsonFragment($attributes);
     }
 
     /** @test */
@@ -161,8 +151,6 @@ class UpdateCategoriesTest extends TestCase
     		'id' => $childCategory->id,
     		'parent_id' => $topLevelCategory1->id
     	]);
-
-    	$response->assertJsonFragment($attributes);
     }
 
     /** @test */

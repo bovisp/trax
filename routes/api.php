@@ -10,6 +10,7 @@ Route::post('roles', 'RolesController@store')->middleware(['auth:api', 'role:adm
 
 Route::get('categories', 'CategoriesController@index')->middleware(['auth:api', 'role:administrator']);
 Route::get('categories/{category}', 'CategoriesController@show')->middleware(['auth:api', 'role:administrator']);
-Route::get('categories/{category}/edit', 'CategoriesController@edit')->middleware(['auth:api', 'role:administrator']);;
+Route::get('categories/{category}/edit', 'CategoriesController@edit')->middleware(['auth:api', 'role:administrator']);
 Route::post('categories', 'CategoriesController@store')->middleware(['auth:api', 'role:administrator']);
-Route::patch('categories/{category}', 'CategoriesController@update')->middleware(['auth:api', 'role:administrator']);;
+Route::patch('categories/{category}', 'CategoriesController@update')->middleware(['auth:api', 'role:administrator']);
+Route::put('categories/edit/order', 'CategoriesOrderController@update')->middleware(['auth:api', 'role:administrator']);

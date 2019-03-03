@@ -11,7 +11,7 @@ class CategoriesController extends Controller
 	public function index()
 	{
 		return CategoryResource::collection(
-			Category::with('children')->parents()->get()
+			Category::with('children')->with('parent')->parents()->ordered()->get()
 		);
 	}
 

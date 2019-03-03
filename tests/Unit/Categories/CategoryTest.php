@@ -21,4 +21,18 @@ class CategoryTest extends TestCase
 
     	$this->assertInstanceOf(Category::class, $parentCategory->children->first());
     }
+
+    /** @test */
+    public function it_is_orderable_by_a_numbered_order()
+    {
+        $category = factory(Category::class)->create([
+            'order' => 2
+        ]);
+
+        $anotherCategory = factory(Category::class)->create([
+            'order' => 1
+        ]);
+
+        $this->assertEquals($anotherCategory->name, Category::ordered()->first()->name);
+    }
 }

@@ -17,6 +17,7 @@ export default {
   	index: () => axios.get('categories'),
   	store: (data) => axios.post('categories', data),
     show: (id) => axios.get(`categories/${id}`),
-    update: (data, id) => axios.patch(`categories/${id}`, data)
+    update: (data, id) => axios.patch(`categories/${id}`, data),
+    updateOrder: (data) => axios.put('categories/edit/order', data)
   }
 }

@@ -12,7 +12,15 @@ export const mutations = {
 
 	SET_CATEGORY (state, category) {
 		state.category = category
-	}
+	},
+
+  updateCategory (state, categories) {
+    for (var i = 0; i < categories.length; i++) {
+      categories[i].order = i + 1
+    }
+
+    state.categories = categories
+  }
 }
 
 export const getters = {
@@ -51,6 +59,23 @@ export const actions = {
   async update ({ commit }, { form, categoryId }) {
     try {
       let response = await api.categories.update(form, categoryId)
+
+      return response
+    } catch (e) {
+      return e.response
+    }
+  },
+
+  async updateOrder ({ dispatch, state }) {
+    let categories =  await state.categories.map(category => {
+      return {
+        id: category.id,
+        order: category.order
+      }
+    })
+
+    try {
+      let response = await api.categories.updateOrder(categories)
 
       return response
     } catch (e) {
