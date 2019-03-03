@@ -13,7 +13,7 @@
 						<div class="is-flex items-center">
 							<div class="dropdown is-hoverable is-right ml-auto">
 								<div class="dropdown-trigger">
-									<button class="button is-white" aria-haspopup="true" aria-controls="dropdown-menu4">
+									<button class="button is-white is-borderless" aria-haspopup="true" aria-controls="dropdown-menu4">
 										<span class="icon is-small">
 											<i class="mdi mdi-settings" aria-hidden="true"></i>
 										</span>
@@ -104,6 +104,18 @@
 
 							<button class="button is-text" @click="cancel">Cancel</button>
 						</div>
+
+						<div class="message is-danger mt-4" v-if="Object.keys(errors).length">
+							<div class="message-body">
+								<ul>
+									<li
+										v-for="error in errors"
+										:key="error"
+										v-text="error[0]"
+									></li>
+								</ul>
+							</div>
+						</div>
 					</template>
 				</div>
 			</div>
@@ -140,7 +152,7 @@
 		            return this.$store.state.admin.categories.categories
 		        },
 		        set(value) {
-		            this.$store.commit('admin/categories/updateCategory', value)
+		            this.$store.commit('admin/categories/UPDATE_CATEGORY_ORDERS', value)
 		        }
 		    }
 		},
@@ -154,9 +166,11 @@
 			async update () {
 				await this.updateOrder()
 
-				this.updating = false
+				if (!Object.keys(this.errors).length) {
+					await this.cancel()
 
-				this.successSnackbar('Categories order updated')				
+					this.successSnackbar('Categories order updated')
+				}				
 			},
 
 			async cancel () {

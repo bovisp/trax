@@ -10,6 +10,11 @@ class CategoriesOrderController extends Controller
 {
     public function update()
     {
+        request()->validate([
+            '*.id' => 'required|exists:categories,id',
+            '*.order' => 'required|integer|distinct'
+        ]);
+
     	foreach (request()->all() as $category) {
     		$categoryToBeUpdated = Category::find($category['id']);
 
@@ -19,7 +24,7 @@ class CategoriesOrderController extends Controller
     	}
 
     	return (CategoryResource::collection(
-    				Category::with('children')->with('parent')->parents()->ordered()->get()
+			Category::with('children')->with('parent')->parents()->ordered()->get()
 		))->additional([
     		'message' => 'Categories order updated.'
 		]);

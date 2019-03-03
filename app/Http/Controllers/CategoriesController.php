@@ -18,7 +18,8 @@ class CategoriesController extends Controller
 	public function store()
     {    	
     	request()->validate([
-    		'name' => 'required|min:3'
+    		'name' => 'required|min:3',
+            'parent_id' => 'sometimes|exists:categories,id'
     	]);
 
     	$category = Category::create(request(['name', 'parent_id']));

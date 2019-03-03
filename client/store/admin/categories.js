@@ -2,7 +2,8 @@ import api from '../../api'
 
 export const state = () => ({
 	categories: [],
-	category: {}
+	category: {},
+  children: []
 })
 
 export const mutations = {
@@ -14,12 +15,24 @@ export const mutations = {
 		state.category = category
 	},
 
-  updateCategory (state, categories) {
+  SET_CHILDREN (state, children) {
+    state.children = children
+  },
+
+  UPDATE_CATEGORY_ORDERS (state, categories) {
     for (var i = 0; i < categories.length; i++) {
       categories[i].order = i + 1
     }
 
     state.categories = categories
+  },
+
+  UPDATE_CHILD_ORDERS (state, children) {
+    for (var i = 0; i < children.length; i++) {
+      children[i].order = i + 1
+    }
+
+    state.children = children
   }
 }
 
@@ -44,6 +57,7 @@ export const actions = {
       let response = await api.categories.show(categoryId)
 
       commit('SET_CATEGORY', response.data.data)
+      commit('SET_CHILDREN', response.data.data.children)
   },
 
   async store ({ commit }, { form }) {
@@ -66,13 +80,24 @@ export const actions = {
     }
   },
 
-  async updateOrder ({ dispatch, state }) {
-    let categories =  await state.categories.map(category => {
-      return {
-        id: category.id,
-        order: category.order
-      }
-    })
+  async updateOrder ({ dispatch, state }, children = false) {
+    let categories = []
+
+    if (!children) {
+      categories =  await state.categories.map(category => {
+        return {
+          id: category.id,
+          order: category.order
+        }
+      })
+    } else {
+      categories =  await state.children.map(category => {
+        return {
+          id: category.id,
+          order: category.order
+        }
+      })
+    }
 
     try {
       let response = await api.categories.updateOrder(categories)

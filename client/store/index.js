@@ -1,5 +1,6 @@
 import cookie from 'cookie'
 import {setAuthToken, resetAuthToken} from '~/utils/auth'
+export const strict = false
 
 export const actions = {
   nuxtServerInit ({dispatch}, context) {
